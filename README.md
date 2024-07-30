@@ -5,7 +5,7 @@ Cari lokasi di komputer Anda untuk menyimpan proyek. Direktori yang dibuat khusu
 
 Buka konsol bash di lokasi tersebut dan clone proyeknya.
 
-`https://github.com/fitrahmaulana/bengkel-erp.git`
+`git clone https://github.com/fitrahmaulana/bengkel-erp.git`
 
 ### 2. Masuk ke Direktori Proyek
 Anda perlu masuk ke direktori proyek yang baru saja dibuat, jadi masuklah ke dalamnya.
