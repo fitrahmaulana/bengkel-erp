@@ -1,66 +1,69 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Pengaturan Awal
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### 1. Clone Repository
+Cari lokasi di komputer Anda untuk menyimpan proyek. Direktori yang dibuat khusus untuk proyek biasanya merupakan pilihan yang baik.
 
-## About Laravel
+Buka konsol bash di lokasi tersebut dan clone proyeknya.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+`git clone https://github.com/organization/project.git`
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 2. Masuk ke Direktori Proyek
+Anda perlu masuk ke direktori proyek yang baru saja dibuat, jadi masuklah ke dalamnya.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+`cd nama_proyek`
 
-## Learning Laravel
+### 3. Instal Dependensi Composer
+Setiap kali Anda meng-clone proyek Laravel baru, Anda harus menginstal semua dependensi proyek. Ini termasuk menginstal Laravel dan paket lain yang diperlukan.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+`composer install`
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 4. Instal Dependensi NPM
+Seperti halnya composer, npm mengelola paket javascript, css, dan node. Pastikan untuk menginstal dependensi tersebut juga.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+`npm install`
 
-## Laravel Sponsors
+### 5. Salin File .env
+File .env biasanya tidak di-commit ke kontrol sumber untuk alasan keamanan. Namun, ada .env.example yang merupakan template dari file .env yang dibutuhkan proyek.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Salin file .env.example dan beri nama .env untuk menyiapkan konfigurasi deployment lokal Anda di langkah-langkah selanjutnya.
 
-### Premium Partners
+`cp .env.example .env`
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 6. Buat Kunci Enkripsi Aplikasi
+Laravel memerlukan kunci enkripsi aplikasi yang biasanya dihasilkan secara acak dan disimpan di file .env. Kunci ini digunakan untuk mengenkripsi berbagai elemen dalam aplikasi, seperti cookie dan hash kata sandi.
 
-## Contributing
+Gunakan perintah ini untuk menghasilkan kunci enkripsi:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+`php artisan key:generate`
 
-## Code of Conduct
+### 7. Buat Database Kosong untuk Aplikasi
+Buat database kosong untuk proyek Anda menggunakan alat database pilihan Anda (phpmyadmin, datagrip, atau klien mysql lainnya).
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 8. Tambahkan Informasi Database di File .env
+Tambahkan kredensial koneksi database di file .env agar Laravel dapat terhubung ke database yang baru saja Anda buat.
 
-## Security Vulnerabilities
+Isi opsi **DB_HOST**, **DB_PORT**, **DB_DATABASE**, **DB_USERNAME**, dan **DB_PASSWORD** dengan kredensial database yang Anda buat.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 9. Branding & Nama
+Di file .env, Anda dapat menyesuaikan nilai untuk **MIX_APP_BRANDING** dan **MIX_APP_NAME**. Perhatikan bahwa **MIX_APP_BRANDING** bisa berupa string kosong jika tidak ada branding yang diinginkan.
 
-## License
+### 10. Migrasi Database
+Setelah kredensial Anda diisi di file .env, Anda dapat melakukan migrasi database. Ini akan membuat semua tabel yang diperlukan di database Anda.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+`php artisan migrate`
+
+## Selama Pengembangan
+
+### Mengkompilasi Aset
+Untuk mengkompilasi semua aset sass dan js menggunakan webpack, jalankan perintah berikut.
+
+`npm run dev`
+
+Anda juga dapat menjalankan perintah berikut yang akan terus berjalan di terminal dan memantau semua file terkait untuk perubahan. Webpack akan otomatis mengkompilasi ulang aset Anda ketika mendeteksi perubahan.
+
+`npm run watch`
+
+### Server Pengembangan Lokal
+Untuk menjalankan server pengembangan lokal, Anda bisa menjalankan perintah berikut. Ini akan memulai server pengembangan di **http://localhost:8000**.
+
+`php artisan serve`
