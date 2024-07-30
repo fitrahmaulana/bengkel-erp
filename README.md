@@ -5,12 +5,12 @@ Cari lokasi di komputer Anda untuk menyimpan proyek. Direktori yang dibuat khusu
 
 Buka konsol bash di lokasi tersebut dan clone proyeknya.
 
-`[git clone https://github.com/organization/project.git](https://github.com/fitrahmaulana/bengkel-erp.git)`
+`https://github.com/fitrahmaulana/bengkel-erp.git`
 
 ### 2. Masuk ke Direktori Proyek
 Anda perlu masuk ke direktori proyek yang baru saja dibuat, jadi masuklah ke dalamnya.
 
-`cd nama_proyek`
+`cd bengkel_erp`
 
 ### 3. Instal Dependensi Composer
 Setiap kali Anda meng-clone proyek Laravel baru, Anda harus menginstal semua dependensi proyek. Ini termasuk menginstal Laravel dan paket lain yang diperlukan.
