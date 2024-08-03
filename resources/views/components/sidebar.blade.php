@@ -7,21 +7,14 @@
     <div class="sidebar-wrapper">
         <nav class="mt-2">
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
-                <x-navlink
-                    href="#"
-                    iconClass="bi bi-speedometer"
-                    label="Dashboard"
-                    :children="[
-                        ['href' => './index.html', 'label' => 'Dashboard v1'],
-                        ['href' => './index2.html', 'label' => 'Dashboard v2'],
-                        ['href' => './index3.html', 'label' => 'Dashboard v3']
-                    ]"
-                />
-                <x-navlink
-                    href="inventory"
-                    iconClass="bi bi-box"
-                    label="Manajemen Barang"
-                />
+                <x-nav-link href="#" iconClass="bi bi-box" label="Manajemen Barang" :children="[
+                    ['href' => route('items'), 'label' => 'Daftar Barang', 'routeName' => 'items'],
+                    ['href' => route('suppliers'), 'label' => 'Suplier', 'routeName' => 'suppliers'],
+                    ['href' => route('stock-movements'), 'label' => 'Pergerakan Stok', 'routeName' => 'stock-movements'],
+                ]" routeName="items" />
+                <x-nav-link href="{{ route('customers') }}" iconClass="bi bi-people" label="Manajemen Pelanggan" />
+                <x-nav-link href="{{ route('sales-report') }}" iconClass="bi bi-graph-up" label="Laporan Penjualan" />
+                <x-nav-link href="{{ route('invoices') }}" iconClass="bi bi-receipt" label="Faktur" />
             </ul>
         </nav>
     </div> <!--end::Sidebar Wrapper-->

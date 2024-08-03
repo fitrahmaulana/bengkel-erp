@@ -14,8 +14,24 @@ class SupplierSeeder extends Seeder
     public function run()
     {
         $suppliers = [
-            ['name' => 'PT. Sumber Suku Cadang', 'contact_info' => 'Jl. Industri No.123, Jakarta'],
-            ['name' => 'CV. Pemasok Ban', 'contact_info' => 'Jl. Ban Karet No.456, Bandung'],
+            [
+                'name' => 'PT. ABC',
+                'contact_person' => 'Budi',
+                'phone' => '08123456789',
+                'address' => 'Jl. Raya No. 1',
+            ],
+            [
+                'name' => 'PT. DEF',
+                'contact_person' => 'Agus',
+                'phone' => '08123456788',
+                'address' => 'Jl. Raya No. 2',
+            ],
+            [
+                'name' => 'PT. GHI',
+                'contact_person' => 'Joko',
+                'phone' => '08123456787',
+                'address' => 'Jl. Raya No. 3',
+            ],
         ];
 
         foreach ($suppliers as $supplier) {

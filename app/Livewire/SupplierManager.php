@@ -7,13 +7,14 @@ use App\Models\Supplier;
 
 class SupplierManager extends Component
 {
-    public $suppliers, $name, $contact_info, $supplier_id;
+    public $suppliers, $name, $contact_person, $phone, $address, $supplier_id;
     public $isOpen = false;
 
     public function render()
     {
         $this->suppliers = Supplier::all();
-        return view('livewire.supplier-manager');
+        return view('livewire.supplier-manager')
+            ->title('Manajemen Pemasok');
     }
 
     public function create()
@@ -21,38 +22,36 @@ class SupplierManager extends Component
         $this->resetInputFields();
         $this->openModal();
     }
-
     public function openModal()
     {
         $this->isOpen = true;
     }
-
     public function closeModal()
     {
         $this->isOpen = false;
     }
-
-    private function resetInputFields()
+    public function resetInputFields()
     {
-        $this->name = '';
-        $this->contact_info = '';
-        $this->supplier_id = null;
+        $this->name = $this->contact_person = $this->phone = $this->address = $this->supplier_id = '';
     }
 
     public function store()
     {
         $this->validate([
             'name' => 'required',
-            'contact_info' => 'required',
+            'contact_person' => 'required',
+            'phone' => 'required',
+            'address' => 'required',
         ]);
 
         Supplier::updateOrCreate(['id' => $this->supplier_id], [
             'name' => $this->name,
-            'contact_info' => $this->contact_info,
+            'contact_person' => $this->contact_person,
+            'phone' => $this->phone,
+            'address' => $this->address,
         ]);
 
-        session()->flash('message', $this->supplier_id ? 'Supplier Updated Successfully.' : 'Supplier Created Successfully.');
-
+        $this->dispatch('flash-message', type: 'success', message: 'Pemasok berhasil disimpan.');
         $this->closeModal();
         $this->resetInputFields();
     }
@@ -62,7 +61,9 @@ class SupplierManager extends Component
         $supplier = Supplier::findOrFail($id);
         $this->supplier_id = $id;
         $this->name = $supplier->name;
-        $this->contact_info = $supplier->contact_info;
+        $this->contact_person = $supplier->contact_person;
+        $this->phone = $supplier->phone;
+        $this->address = $supplier->address;
 
         $this->openModal();
     }
@@ -70,6 +71,6 @@ class SupplierManager extends Component
     public function delete($id)
     {
         Supplier::find($id)->delete();
-        session()->flash('message', 'Supplier Deleted Successfully.');
+        $this->dispatch('flash-message', type: 'success', message: 'Pemasok berhasil dihapus.');
     }
 }

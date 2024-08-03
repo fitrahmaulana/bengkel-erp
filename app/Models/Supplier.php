@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Supplier extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'contact_info'];
 
-    public function purchases()
+    protected $fillable = ['name', 'contact_person', 'phone', 'address'];
+
+    public function stockMovements()
     {
-        return $this->hasMany(Purchase::class);
+        return $this->hasMany(StockMovement::class);
     }
 }

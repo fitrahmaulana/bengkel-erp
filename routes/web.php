@@ -1,7 +1,11 @@
 <?php
 
+use App\Livewire\CustomerManager;
+use App\Livewire\InvoiceManager;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\ItemManager;
+use App\Livewire\SalesReport;
+use App\Livewire\StockMovementManager;
 use App\Livewire\SupplierManager;
 
 /*
@@ -19,9 +23,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/inventory', ItemManager::class)->name('inventory.index');
-Route::get('/suppliers', SupplierManager::class)->name('suppliers.index');
+// Rute untuk Manajemen Inventaris
+Route::get('/items', ItemManager::class)->name('items');
+Route::get('/items/stock-movements', StockMovementManager::class)->name('stock-movements');
+Route::get('/items/suppliers', SupplierManager::class)->name('suppliers');
 
-// Optional: Routes for stock management
-Route::get('/inventory/stock-in/{id}', [ItemManager::class, 'stockIn'])->name('inventory.stock-in');
-Route::get('/inventory/stock-out/{id}', [ItemManager::class, 'stockOut'])->name('inventory.stock-out');
+// Rute untuk Manajemen Pelanggan
+Route::get('/customers', CustomerManager::class)->name('customers');
+
+// Rute untuk Manajemen Penjualan
+Route::get('/invoices', InvoiceManager::class)->name('invoices');
+
+// Rute untuk Laporan Penjualan
+Route::get('/sales-report', SalesReport::class)->name('sales-report');
