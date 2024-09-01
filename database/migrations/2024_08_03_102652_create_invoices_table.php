@@ -9,25 +9,32 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('customer_id');
+            $table->foreignId('customer_id')->constrained();
             $table->date('invoice_date');
-            $table->decimal('total_amount', 10, 0);
-            $table->string('status')->default('unpaid');
+            $table->decimal('total_amount', 10, 2);
+            $table->string('status'); // 'paid', 'unpaid'
             $table->timestamps();
+        });
 
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+        Schema::create('invoice_items', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('invoice_id')->constrained()
+                ->onDelete('cascade');
+            $table->foreignId('item_id')->constrained();
+            $table->integer('quantity');
+            $table->decimal('price', 10, 0);
+            $table->decimal('total', 10, 0);
+            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
+        Schema::dropIfExists('invoice_items');
         Schema::dropIfExists('invoices');
     }
 };

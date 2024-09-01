@@ -2,24 +2,29 @@
 
 namespace App\Livewire;
 
+use Livewire\Component;
 use App\Models\Invoice;
 use Carbon\Carbon;
-use Livewire\Component;
 
 class SalesReport extends Component
 {
-    public $start_date, $end_date, $invoices;
+    public $startDate, $endDate;
+    public $salesData;
 
     public function render()
     {
-        $this->invoices = Invoice::whereBetween('invoice_date', [$this->start_date, $this->end_date])->get();
+        $this->salesData = Invoice::whereBetween('invoice_date', [$this->startDate, $this->endDate])
+                                  ->selectRaw('DATE(invoice_date) as date, SUM(total_amount) as total_sales')
+                                  ->groupBy('date')
+                                  ->get();
+
         return view('livewire.sales-report')
                 ->title('Laporan Penjualan');
     }
 
     public function mount()
     {
-        $this->start_date = Carbon::now()->startOfMonth()->toDateString();
-        $this->end_date = Carbon::now()->endOfMonth()->toDateString();
+        $this->startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $this->endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
     }
 }

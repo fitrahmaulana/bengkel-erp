@@ -1,32 +1,26 @@
+<!-- resources/views/livewire/sales-report.blade.php -->
 <div>
-    <div class="row mb-3">
-        <div class="col-md-5">
-            <input type="date" wire:model="start_date" class="form-control" placeholder="Tanggal Mulai">
+    <div class="row">
+        <div class="col-md-6">
+            <input type="date" wire:model="startDate" class="form-control">
         </div>
-        <div class="col-md-5">
-            <input type="date" wire:model="end_date" class="form-control" placeholder="Tanggal Selesai">
-        </div>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-primary" wire:click="render()">Cari</button>
+        <div class="col-md-6">
+            <input type="date" wire:model="endDate" class="form-control">
         </div>
     </div>
 
     <table class="table table-bordered mt-3">
         <thead>
             <tr>
-                <th>Pelanggan</th>
-                <th>Tanggal Faktur</th>
-                <th>Jumlah Total</th>
-                <th>Status</th>
+                <th>Tanggal</th>
+                <th>Total Penjualan</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($invoices as $invoice)
-                <tr wire:key="invoice-{{ $invoice->id }}">
-                    <td>{{ $invoice->customer->name }}</td>
-                    <td>{{ $invoice->invoice_date }}</td>
-                    <td>{{ $invoice->total_amount }}</td>
-                    <td>{{ $invoice->status }}</td>
+            @foreach($salesData as $data)
+                <tr>
+                    <td>{{ \Carbon\Carbon::parse($data->date)->format('d/m/Y') }}</td>
+                    <td>{{ "Rp " . number_format($data->total_sales, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
         </tbody>

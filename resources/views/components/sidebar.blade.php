@@ -7,6 +7,7 @@
     <div class="sidebar-wrapper">
         <nav class="mt-2">
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+                <x-nav-link href="{{ route('dashboard') }}" iconClass="bi bi-house" label="Dashboard" />
                 <x-nav-link href="#" iconClass="bi bi-box" label="Manajemen Barang" :children="[
                     ['href' => route('items'), 'label' => 'Daftar Barang', 'routeName' => 'items'],
                     ['href' => route('suppliers'), 'label' => 'Suplier', 'routeName' => 'suppliers'],

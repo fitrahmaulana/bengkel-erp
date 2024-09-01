@@ -22,8 +22,8 @@ class DatabaseSeeder extends Seeder
             ItemSeeder::class,
             SupplierSeeder::class,
             CustomerSeeder::class,
-            InvoiceSeeder::class,
-            PaymentSeeder::class,
+            InvoicesTableSeeder::class,
+            InvoiceItemsTableSeeder::class,
         ]);
     }
 }

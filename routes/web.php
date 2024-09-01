@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\CustomerManager;
+use App\Livewire\Dashboard;
 use App\Livewire\InvoiceManager;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\ItemManager;
@@ -19,9 +20,8 @@ use App\Livewire\SupplierManager;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Rute untuk Dashboard
+Route::get('/', Dashboard::class)->name('dashboard');
 
 // Rute untuk Manajemen Inventaris
 Route::get('/items', ItemManager::class)->name('items');

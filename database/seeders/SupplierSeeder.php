@@ -15,22 +15,22 @@ class SupplierSeeder extends Seeder
     {
         $suppliers = [
             [
-                'name' => 'PT. ABC',
-                'contact_person' => 'Budi',
-                'phone' => '08123456789',
-                'address' => 'Jl. Raya No. 1',
+                'name' => 'PT. Pertamina Lubricants',
+                'contact_person' => 'Ahmad',
+                'phone' => '02112345678',
+                'address' => 'Jl. Medan Merdeka Timur No.1A, Jakarta',
             ],
             [
-                'name' => 'PT. DEF',
-                'contact_person' => 'Agus',
-                'phone' => '08123456788',
-                'address' => 'Jl. Raya No. 2',
+                'name' => 'Bridgestone Tire Indonesia',
+                'contact_person' => 'Suryo',
+                'phone' => '02187654321',
+                'address' => 'Jl. Raya Bekasi No.1, Karawang',
             ],
             [
-                'name' => 'PT. GHI',
-                'contact_person' => 'Joko',
-                'phone' => '08123456787',
-                'address' => 'Jl. Raya No. 3',
+                'name' => 'PT. NGK Busi Indonesia',
+                'contact_person' => 'Faisal',
+                'phone' => '02111223344',
+                'address' => 'Jl. Raya Bogor KM 26, Jakarta Timur',
             ],
         ];
 
