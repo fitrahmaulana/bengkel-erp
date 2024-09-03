@@ -21,7 +21,7 @@ class InvoiceManager extends Component
 
     public function render()
     {
-        $this->invoices = Invoice::with('customer', 'items.item')->get();
+        $this->invoices = Invoice::with('customer', 'invoiceItems.item')->get();
         $this->customers = Customer::all();
 
         // Search items based on search term
