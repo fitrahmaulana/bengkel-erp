@@ -1,6 +1,5 @@
 <?php
 
-// Livewire Component: InvoiceManager.php
 namespace App\Livewire;
 
 use Livewire\Component;
@@ -8,23 +7,21 @@ use App\Models\Invoice;
 use App\Models\Customer;
 use App\Models\Item;
 use App\Models\InvoiceItem;
-use phpDocumentor\Reflection\Types\This;
 
 class InvoiceManager extends Component
 {
     public $invoices, $customers, $items = [];
-    public $searchTerm;
-    public $selectedItem, $quantity = 1;
-    public $invoiceItems = [];
+    public $searchTerm, $selectedItem, $quantity = 1;
+    public $invoiceItems = [], $customItems = [];
     public $customer_id, $invoice_date, $total_amount = 0, $status = 'unpaid';
     public $isOpen = false;
+    public $customItemName, $customItemPrice, $customItemQuantity = 1;
 
     public function render()
     {
         $this->invoices = Invoice::with('customer', 'invoiceItems.item')->get();
         $this->customers = Customer::all();
 
-        // Search items based on search term
         if (!empty($this->searchTerm)) {
             $this->items = Item::where('name', 'like', '%' . $this->searchTerm . '%')->get();
         } else {
@@ -53,9 +50,11 @@ class InvoiceManager extends Component
 
     public function resetInputFields()
     {
-        $this->customer_id = $this->invoice_date = $this->total_amount = '';
+        $this->customer_id = $this->invoice_date = '';
         $this->invoiceItems = [];
+        $this->customItems = [];
         $this->total_amount = 0;
+        $this->reset(['customItemName', 'customItemPrice', 'customItemQuantity']);
     }
 
     public function selectItem($itemId)
@@ -65,7 +64,6 @@ class InvoiceManager extends Component
         if ($item) {
             $this->selectedItem = $item;
 
-            // Cek stok di database
             if ($this->quantity > $item->quantity) {
                 $this->dispatch('flash-message', type: 'error', message: 'Stok tidak mencukupi.');
             } else {
@@ -73,7 +71,6 @@ class InvoiceManager extends Component
             }
         }
 
-        // Reset search term setelah item dipilih
         $this->reset('searchTerm');
     }
 
@@ -84,12 +81,24 @@ class InvoiceManager extends Component
             'name' => $this->selectedItem->name,
             'quantity' => $this->quantity,
             'price' => $this->selectedItem->price,
-            'total' => $this->selectedItem->price * $this->quantity,
+            'total' => $this->calculateItemTotal($this->selectedItem->price, $this->quantity),
         ];
 
         $this->calculateTotal();
     }
 
+    public function addCustomItem()
+    {
+        $this->customItems[] = [
+            'name' => $this->customItemName,
+            'quantity' => $this->customItemQuantity,
+            'price' => $this->customItemPrice,
+            'total' => $this->calculateItemTotal($this->customItemPrice, $this->customItemQuantity),
+        ];
+
+        $this->reset(['customItemName', 'customItemPrice', 'customItemQuantity']);
+        $this->calculateTotal();
+    }
 
     public function removeInvoiceItem($index)
     {
@@ -98,44 +107,46 @@ class InvoiceManager extends Component
         $this->calculateTotal();
     }
 
+    public function removeCustomItem($index)
+    {
+        unset($this->customItems[$index]);
+        $this->customItems = array_values($this->customItems);
+        $this->calculateTotal();
+    }
+
     public function updated($propertyName, $value)
     {
-        // Clear specific field error
         $this->resetErrorBag($propertyName);
 
         if (preg_match('/^invoiceItems\.(\d+)\.quantity$/', $propertyName, $matches)) {
             $index = $matches[1];
             $item = &$this->invoiceItems[$index];
-
-            // Cek stok di database
             $stock = Item::find($item['item_id'])->quantity;
+            $numericValue = floatval($value);
 
-            // Pastikan $value adalah numerik, konversi jika perlu
-            $numericValue = floatval($value); // Menggunakan floatval untuk mengakomodasi nilai pecahan
-
-            // Tambahkan pemeriksaan untuk nilai negatif
             if ($numericValue < 0) {
                 $this->addError("invoiceItems.{$index}.quantity", "Kuantitas tidak boleh negatif.");
-                return; // Hentikan eksekusi lebih lanjut jika nilai negatif
+                return;
             }
 
             if ($numericValue > $stock) {
-                // Jika kuantitas melebihi stok, tampilkan pesan error
                 $this->addError("invoiceItems.{$index}.quantity", "Kuantitas melebihi stok yang tersedia ({$stock}).");
             } else {
-                // Pastikan 'price' juga diubah menjadi numerik sebelum operasi perkalian
-                $numericPrice = floatval($item['price']);
-
-                // Jika kuantitas valid, perbarui total untuk item
-                $item['total'] = $numericPrice * $numericValue;
+                $item['total'] = floatval($item['price']) * $numericValue;
                 $this->calculateTotal();
             }
+        } elseif (preg_match('/^customItems\.(\d+)\.quantity$/', $propertyName, $matches)) {
+            $index = $matches[1];
+            $item = &$this->customItems[$index];
+            $numericValue = floatval($value);
+            $item['total'] = floatval($item['price']) * $numericValue;
+            $this->calculateTotal();
         }
     }
 
     public function calculateTotal()
     {
-        $this->total_amount = array_sum(array_column($this->invoiceItems, 'total'));
+        $this->total_amount = array_sum(array_column($this->invoiceItems, 'total')) + array_sum(array_column($this->customItems, 'total'));
     }
 
     public function store()
@@ -149,7 +160,6 @@ class InvoiceManager extends Component
                 'integer',
                 'min:1',
                 function ($attr, $value, $fail) {
-                    // Dapatkan index dari invoiceItems
                     $index = explode('.', $attr)[1];
                     $item = $this->invoiceItems[$index];
                     $stock = Item::find($item['item_id'])->quantity;
@@ -159,6 +169,9 @@ class InvoiceManager extends Component
                     }
                 }
             ],
+            'customItems.*.name' => 'required|string',
+            'customItems.*.quantity' => 'required|integer|min:1',
+            'customItems.*.price' => 'required|numeric|min:0',
         ]);
 
         $invoice = Invoice::create([
@@ -177,7 +190,6 @@ class InvoiceManager extends Component
                 'total' => $item['total'],
             ]);
 
-            // Mengurangi quantity pada model Item
             $itemModel = Item::find($item['item_id']);
             if ($itemModel) {
                 $itemModel->quantity -= $item['quantity'];
@@ -185,19 +197,24 @@ class InvoiceManager extends Component
             }
         }
 
+        foreach ($this->customItems as $customItem) {
+            InvoiceItem::create([
+                'invoice_id' => $invoice->id,
+                'item_id' => null,  // Indicates a custom item
+                'quantity' => $customItem['quantity'],
+                'price' => $customItem['price'],
+                'total' => $customItem['total'],
+                'name' => $customItem['name'], // Save custom name directly
+            ]);
+        }
+
         $this->dispatch('flash-message', type: 'success', message: 'Faktur berhasil disimpan.');
         $this->closeModal();
         $this->resetInputFields();
     }
 
-    public function clearError($propertyName)
+    public function calculateItemTotal($price, $quantity)
     {
-        $this->resetErrorBag($propertyName);
-    }
-
-    public function delete($id)
-    {
-        Invoice::find($id)->delete();
-        $this->dispatch('flash-message', type: 'success', message: 'Faktur berhasil dihapus.');
+        return $price * $quantity;
     }
 }

@@ -1,4 +1,3 @@
-<!-- resources/views/livewire/invoice-manager.blade.php -->
 <div>
     <button type="button" wire:click="create()" class="btn btn-primary">Tambah Faktur</button>
 
@@ -24,10 +23,10 @@
                         @error('invoice_date')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
-                        <!-- Search bar for items -->
-                        <input type="text" wire:model.live="searchTerm" class="form-control mt-3"
-                            placeholder="Cari Barang...">
 
+                        <!-- Search bar for items -->
+                        <input type="text" wire:model.live.debounce500ms="searchTerm" class="form-control mt-3"
+                            placeholder="Cari Barang...">
                         @if (!empty($items))
                             <ul class="list-group mt-2">
                                 @foreach ($items as $item)
@@ -40,23 +39,38 @@
                         @endif
 
                         <hr>
-                        <div class="row align-items-center mb-2">
+
+                        <!-- Form for custom items -->
+                        <h5>Tambah Jasa/Barang Custom</h5>
+                        <div class="row mb-2">
                             <div class="col-md-5">
-                                <label>Nama Barang</label>
+                                <input type="text" wire:model="customItemName" class="form-control"
+                                    placeholder="Nama Jasa/Barang">
+                                @error('customItemName')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="col-md-2">
-                                <label>Qty</label>
+                                <input type="number" wire:model="customItemQuantity" class="form-control"
+                                    placeholder="Qty">
+                                @error('customItemQuantity')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="col-md-2">
-                                <label>@</label>
+                                <input type="text" wire:model="customItemPrice" class="form-control"
+                                    placeholder="Harga">
+                                @error('customItemPrice')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="col-md-2">
-                                <label>Jumlah</label>
-                            </div>
-                            <div class="col-md-1">
-                                <!-- Placeholder for alignment -->
+                                <button type="button" class="btn btn-primary"
+                                    wire:click="addCustomItem">Tambah</button>
                             </div>
                         </div>
+
+                        <hr>
 
                         <!-- List of selected items -->
                         @foreach ($invoiceItems as $index => $invoiceItem)
@@ -66,8 +80,9 @@
                                         readonly>
                                 </div>
                                 <div class="col-md-2">
-                                    <input type="number" wire:model.live.debounce500ms="invoiceItems.{{ $index }}.quantity" class="form-control"
-                                        placeholder="Jumlah">
+                                    <input type="number"
+                                        wire:model.live.debounce500ms="invoiceItems.{{ $index }}.quantity"
+                                        class="form-control" placeholder="Jumlah">
                                     @error('invoiceItems.' . $index . '.quantity')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -83,6 +98,39 @@
                                 <div class="col-md-1">
                                     <button type="button" class="btn btn-danger btn-sm"
                                         wire:click="removeInvoiceItem({{ $index }})">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <hr>
+                        @endforeach
+
+                        <!-- List of custom items -->
+                        @foreach ($customItems as $index => $customItem)
+                            <div class="row align-items-center">
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" value="{{ $customItem['name'] }}"
+                                        readonly>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number"
+                                        wire:model.live.debounce500ms="customItems.{{ $index }}.quantity"
+                                        class="form-control" placeholder="Jumlah">
+                                    @error('customItems.' . $index . '.quantity')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control"
+                                        value="Rp{{ number_format($customItem['price'], 0, ',', '.') }}" readonly>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control"
+                                        value="Rp{{ number_format($customItem['total'], 0, ',', '.') }}" readonly>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        wire:click="removeCustomItem({{ $index }})">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>

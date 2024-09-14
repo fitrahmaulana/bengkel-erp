@@ -88,7 +88,9 @@
                         <button wire:click="edit({{ $item->id }})" class="btn btn-warning btn-sm">
                             <i class="bi bi-pencil-square"></i>
                         </button>
-                        <button wire:click="delete({{ $item->id }})" class="btn btn-danger btn-sm">
+                        <button wire:click="delete({{ $item->id }})"
+                            wire:confirm="Apakah Anda yakin ingin menghapus item ini?"
+                            class="btn btn-danger btn-sm">
                             <i class="bi bi-trash"></i>
                         </button>
                     </td>

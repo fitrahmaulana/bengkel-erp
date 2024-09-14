@@ -72,7 +72,9 @@
                     <td>{{ $customer->address }}</td>
                     <td>
                         <button wire:click="edit({{ $customer->id }})" class="btn btn-warning btn-sm">Edit</button>
-                        <button wire:click="delete({{ $customer->id }})" class="btn btn-danger btn-sm">Hapus</button>
+                        <button wire:click="delete({{ $customer->id }})"
+                            wire:confirm="Apakah Anda yakin ingin menghapus pelanggan ini?"
+                            class="btn btn-danger btn-sm">Hapus</button>
                     </td>
                 </tr>
             @endforeach
