@@ -15,7 +15,10 @@
                 ]" routeName="items" />
                 <x-nav-link href="{{ route('customers') }}" iconClass="bi bi-people" label="Manajemen Pelanggan" />
                 <x-nav-link href="{{ route('sales-report') }}" iconClass="bi bi-graph-up" label="Laporan Penjualan" />
-                <x-nav-link href="{{ route('invoices') }}" iconClass="bi bi-receipt" label="Faktur" />
+                <x-nav-link href="#" iconClass="bi bi-receipt" label="Manajemen Faktur" :children="[
+                    ['href' => route('invoices.index'), 'label' => 'Daftar Faktur', 'routeName' => 'invoices.index'],
+                    ['href' => route('invoices.create'), 'label' => 'Buat Faktur Baru', 'routeName' => 'invoices.create'],
+                ]" />
             </ul>
         </nav>
     </div> <!--end::Sidebar Wrapper-->

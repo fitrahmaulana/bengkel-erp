@@ -64,7 +64,7 @@ class InvoiceManager extends Component
         if ($item) {
             $this->selectedItem = $item;
 
-            if ($this->quantity > $item->quantity) {
+            if ($this->quantity > $item->stock) {
                 $this->dispatch('flash-message', type: 'error', message: 'Stok tidak mencukupi.');
             } else {
                 $this->addInvoiceItem();
@@ -121,7 +121,7 @@ class InvoiceManager extends Component
         if (preg_match('/^invoiceItems\.(\d+)\.quantity$/', $propertyName, $matches)) {
             $index = $matches[1];
             $item = &$this->invoiceItems[$index];
-            $stock = Item::find($item['item_id'])->quantity;
+            $stock = Item::find($item['item_id'])->stock;
             $numericValue = floatval($value);
 
             if ($numericValue < 0) {
@@ -162,7 +162,7 @@ class InvoiceManager extends Component
                 function ($attr, $value, $fail) {
                     $index = explode('.', $attr)[1];
                     $item = $this->invoiceItems[$index];
-                    $stock = Item::find($item['item_id'])->quantity;
+                    $stock = Item::find($item['item_id'])->stock;
 
                     if ($value > $stock) {
                         $fail("Kuantitas untuk {$item['name']} melebihi stok yang tersedia ({$stock}).");
@@ -192,7 +192,7 @@ class InvoiceManager extends Component
 
             $itemModel = Item::find($item['item_id']);
             if ($itemModel) {
-                $itemModel->quantity -= $item['quantity'];
+                $itemModel->stock -= $item['quantity'];
                 $itemModel->save();
             }
         }
@@ -216,5 +216,11 @@ class InvoiceManager extends Component
     public function calculateItemTotal($price, $quantity)
     {
         return $price * $quantity;
+    }
+
+    public function delete($id)
+    {
+        Invoice::find($id)->delete();
+        $this->dispatch('flash-message', type: 'success', message: 'Faktur berhasil dihapus.');
     }
 }

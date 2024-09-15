@@ -40,7 +40,7 @@ class Dashboard extends Component
         $this->newCustomers = Customer::where('created_at', '>=', now()->subDays(30))->count();
 
         // Menghitung barang dengan stok rendah (misalnya, stok di bawah 10)
-        $this->lowStockItems = Item::where('quantity', '<', 10)->count();
+        $this->lowStockItems = Item::where('stock', '<', 10)->count();
 
         // Menghitung total item
         $this->totalItems = Item::count();

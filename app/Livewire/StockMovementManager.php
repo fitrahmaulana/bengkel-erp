@@ -52,13 +52,13 @@ class StockMovementManager extends Component
         $item = Item::findOrFail($this->item_id);
 
         if ($this->type == 'in') {
-            $item->quantity += $this->quantity;
+            $item->stock += $this->quantity;
         } elseif ($this->type == 'out') {
-            if ($item->quantity < $this->quantity) {
+            if ($item->stock < $this->quantity) {
                 $this->dispatch('flash-message', type: 'error', message: 'Stok barang tidak mencukupi.');
                 return;
             }
-            $item->quantity -= $this->quantity;
+            $item->stock -= $this->quantity;
         }
 
         $item->save();
@@ -81,9 +81,9 @@ class StockMovementManager extends Component
         $item = Item::findOrFail($movement->item_id);
 
         if ($movement->type == 'in') {
-            $item->quantity -= $movement->quantity;
+            $item->stock -= $movement->quantity;
         } elseif ($movement->type == 'out') {
-            $item->quantity += $movement->quantity;
+            $item->stock += $movement->quantity;
         }
 
         $item->save();

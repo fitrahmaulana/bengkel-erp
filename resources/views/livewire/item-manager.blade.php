@@ -30,10 +30,10 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="quantity" class="form-label">Jumlah Barang</label>
-                                <input type="number" class="form-control" id="quantity" wire:model.defer="quantity"
+                                <label for="stock" class="form-label">Jumlah Barang</label>
+                                <input type="number" class="form-control" id="stock" wire:model.defer="stock"
                                     placeholder="Contoh: 20">
-                                @error('quantity')
+                                @error('stock')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -70,7 +70,7 @@
             <tr>
                 <th>Nama</th>
                 <th>Deskripsi</th>
-                <th>Jumlah</th>
+                <th>Stok</th>
                 <th>Harga</th>
                 <th>Stok Minimum</th>
                 <th>Aksi</th>
@@ -81,7 +81,7 @@
                 <tr wire:key="item-{{ $item->id }}">
                     <td>{{ $item->name }}</td>
                     <td>{{ $item->description }}</td>
-                    <td>{{ $item->quantity }}</td>
+                    <td>{{ $item->stock }}</td>
                     <td>{{ $item->price }}</td>
                     <td>{{ $item->min_stock }}</td>
                     <td>

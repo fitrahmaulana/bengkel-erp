@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->integer('quantity');
+            $table->integer('stock')->default(0);
             $table->decimal('price', 8, 0);
             $table->integer('min_stock')->default(1); // Default minimum stock
             $table->timestamps();

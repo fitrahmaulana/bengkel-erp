@@ -10,7 +10,7 @@ class Item extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'description', 'quantity', 'price', 'min_stock'
+        'name', 'description', 'stock', 'price', 'min_stock'
     ];
 
     public function stockMovements()

@@ -3,6 +3,7 @@
 use App\Livewire\CustomerManager;
 use App\Livewire\Dashboard;
 use App\Livewire\InvoiceManager;
+use App\Livewire\Invoices\CreateInvoice;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\ItemManager;
 use App\Livewire\SalesReport;
@@ -32,7 +33,8 @@ Route::get('/items/suppliers', SupplierManager::class)->name('suppliers');
 Route::get('/customers', CustomerManager::class)->name('customers');
 
 // Rute untuk Manajemen Penjualan
-Route::get('/invoices', InvoiceManager::class)->name('invoices');
+Route::get('/invoices', InvoiceManager::class)->name('invoices.index');
+Route::get('/invoices/create', CreateInvoice::class)->name('invoices.create');
 
 // Rute untuk Laporan Penjualan
 Route::get('/sales-report', SalesReport::class)->name('sales-report');

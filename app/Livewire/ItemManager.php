@@ -7,7 +7,7 @@ use App\Models\Item;
 
 class ItemManager extends Component
 {
-    public $items, $name, $description, $quantity, $price, $min_stock, $item_id;
+    public $items, $name, $description, $stock, $price, $min_stock, $item_id;
     public $isOpen = false;
 
     public function render()
@@ -39,7 +39,7 @@ class ItemManager extends Component
     {
         $this->name = '';
         $this->description = '';
-        $this->quantity = '';
+        $this->stock = '';
         $this->price = '';
         $this->min_stock = '';
         $this->item_id = null;
@@ -49,7 +49,7 @@ class ItemManager extends Component
     {
         $this->validate([
             'name' => 'required|string',
-            'quantity' => 'required|integer',
+            'stock' => 'required|integer',
             'price' => 'required|numeric',
             'min_stock' => 'required|integer',
         ]);
@@ -57,7 +57,7 @@ class ItemManager extends Component
         Item::updateOrCreate(['id' => $this->item_id], [
             'name' => $this->name,
             'description' => $this->description,
-            'quantity' => $this->quantity,
+            'stock' => $this->stock,
             'price' => $this->price,
             'min_stock' => $this->min_stock,
         ]);
@@ -74,7 +74,7 @@ class ItemManager extends Component
         $this->item_id = $id;
         $this->name = $item->name;
         $this->description = $item->description;
-        $this->quantity = $item->quantity;
+        $this->stock = $item->stock;
         $this->price = $item->price;
         $this->min_stock = $item->min_stock;
 
@@ -89,7 +89,7 @@ class ItemManager extends Component
 
     public function checkLowStock()
     {
-        $lowStockItems = Item::whereColumn('quantity', '<=', 'min_stock')->get();
+        $lowStockItems = Item::whereColumn('stock', '<=', 'min_stock')->get();
         foreach ($lowStockItems as $item) {
             // Trigger notifikasi atau tindakan lainnya
         }

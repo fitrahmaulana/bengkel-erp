@@ -32,7 +32,7 @@
                                 @foreach ($items as $item)
                                     <li class="list-group-item" wire:click="selectItem({{ $item->id }})">
                                         {{ $item->name }} - Rp{{ number_format($item->price, 0, ',', '.') }} (Stok:
-                                        {{ $item->quantity }})
+                                        {{ $item->stock }})
                                     </li>
                                 @endforeach
                             </ul>
