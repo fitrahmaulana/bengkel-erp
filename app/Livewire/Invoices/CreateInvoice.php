@@ -14,7 +14,7 @@ class CreateInvoice extends Component
     public $customer_id, $invoice_date, $total_amount = 0;
     public $invoiceItems = [], $customItems = [];
     public $searchTerm, $quantity = 1;
-    public $customItemName, $customItemQuantity = 1, $customItemPrice;
+    public $customItemName, $customItemQuantity = 1, $customItemPrice, $customItemType;
 
 
     // rule
@@ -104,6 +104,7 @@ class CreateInvoice extends Component
             'quantity' => $this->customItemQuantity,
             'price' => $this->customItemPrice,
             'total' => $this->customItemPrice * $this->customItemQuantity,
+            'type' => $this->customItemType,
         ];
         $this->calculateTotal();
         $this->reset(['customItemName', 'customItemQuantity', 'customItemPrice']);
@@ -169,12 +170,15 @@ class CreateInvoice extends Component
             'status' => 'unpaid',
         ]);
 
+        // create invoice items barang
         foreach ($this->invoiceItems as $item) {
             InvoiceItem::create([
                 'invoice_id' => $invoice->id,
                 'item_id' => $item['item_id'],
+                'name' => $item['name'],
                 'quantity' => $item['quantity'],
                 'price' => $item['price'],
+                'type' => 'product',
                 'total' => $item['total'],
             ]);
 
@@ -186,14 +190,17 @@ class CreateInvoice extends Component
             }
         }
 
+        // create invoice items custom
         foreach ($this->customItems as $customItem) {
             InvoiceItem::create([
                 'invoice_id' => $invoice->id,
                 'item_id' => null,
+                'name' => $customItem['name'],
                 'quantity' => $customItem['quantity'],
                 'price' => $customItem['price'],
                 'total' => $customItem['total'],
                 'name' => $customItem['name'],
+                'type' => $customItem['type'],
             ]);
         }
 

@@ -49,7 +49,16 @@
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
+                <select wire:model.live="customItemType" class="form-control">
+                    <option value="service">Jasa</option>
+                    <option value="custom">Custom</option>
+                </select>
+                @error('customItemType')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="col-md-1">
                 <input type="number" wire:model.live="customItemQuantity" class="form-control" placeholder="Qty">
                 @error('customItemQuantity')
                     <span class="text-danger">{{ $message }}</span>

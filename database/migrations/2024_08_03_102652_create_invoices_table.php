@@ -23,11 +23,13 @@ return new class extends Migration
         Schema::create('invoice_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('invoice_id')->constrained()
-                ->onDelete('cascade');
+            ->onDelete('cascade');
             $table->foreignId('item_id')->nullable()->constrained();
+            $table->string('name');
             $table->integer('quantity');
             $table->decimal('price', 10, 0);
             $table->decimal('total', 10, 0);
+            $table->enum('type', ['product', 'service', 'custom']);
             $table->timestamps();
         });
     }
