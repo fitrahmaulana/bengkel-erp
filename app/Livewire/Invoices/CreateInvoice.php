@@ -6,128 +6,106 @@ use App\Livewire\Forms\InvoiceForm;
 use Livewire\Component;
 use App\Models\Customer;
 use App\Models\Item;
-use App\Models\Invoice;
-use App\Models\InvoiceItem;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 
 class CreateInvoice extends Component
 {
     public InvoiceForm $form;
-    // untuk menampilkan data pelanggan dan item di search bar
-    public $customers, $items = [];
-    public $searchTerm, $quantity = 1;
-
-    public $customItemName, $customItemQuantity = 1, $customItemPrice, $customItemType;
+    public $searchTerm = '';
+    public $quantity = 1;
 
     public function mount()
     {
-        $this->customers = Customer::all();
+        $this->form->fill([
+            'invoice_date' => now()->format('Y-m-d'),
+            'invoiceItems' => [],
+            'customItems' => [],
+        ]);
     }
 
     public function render()
     {
-        if (!empty($this->searchTerm)) {
-            $this->items = Item::where('name', 'like', '%' . $this->searchTerm . '%')->get();
-        } else {
-            $this->items = [];
-        }
-
-        return view('livewire.invoices.create-invoice')
-            ->title('Buat Faktur Baru');
+        return view('livewire.invoices.create-invoice', [
+            'customers' => $this->customers,
+            'items' => $this->searchResults,
+        ])->title('Buat Faktur Baru');
     }
 
-    public function selectItem($itemId)
+    #[Computed]
+    public function customers()
     {
-        $item = Item::find($itemId);
+        return Customer::all();
+    }
 
-        if ($item) {
-            // Ensure quantity is not more than stock
-            if ($this->quantity > $item->stock) {
-                $this->addError('quantity', "Kuantitas melebihi stok yang tersedia ({$item->stock}).");
-                return;
-            }
+    public function hydrate()
+    {
+        $this->resetErrorBag();
+        $this->resetValidation();
+    }
 
-            $this->form->invoiceItems[] = [
-                'item_id' => $item->id,
-                'name' => $item->name,
-                'quantity' => $this->quantity,
-                'price' => $item->price,
-                'total' => $item->price * $this->quantity,
-            ];
-            $this->calculateTotal();
+    #[Computed]
+    public function searchResults()
+    {
+        return strlen($this->searchTerm) > 2
+            ? Item::where('name', 'like', "%{$this->searchTerm}%")->get()
+            : collect();
+    }
+
+    public function selectItem(Item $item)
+    {
+        if ($this->quantity > $item->stock) {
+            $this->addError('quantity', "Kuantitas melebihi stok yang tersedia ({$item->stock}).");
+            return;
         }
 
-        $this->reset('searchTerm', 'quantity');
+        $this->form->addInvoiceItem($item, $this->quantity);
+        $this->reset(['searchTerm', 'quantity']);
     }
 
     public function addCustomItem()
     {
-        $this->form->customItems[] = [
-            'name' => $this->customItemName,
-            'quantity' => $this->customItemQuantity,
-            'price' => $this->customItemPrice,
-            'total' => $this->customItemPrice * $this->customItemQuantity,
-            'type' => $this->customItemType,
-        ];
-        $this->calculateTotal();
-        $this->reset(['customItemName', 'customItemQuantity', 'customItemPrice']);
+        $this->validate([
+            'form.customItemName' => 'required',
+            'form.customItemQuantity' => 'required|numeric|min:1',
+            'form.customItemPrice' => 'required|numeric|min:0',
+            'form.customItemType' => 'required|in:service,custom',
+        ]);
+
+        $this->form->addCustomItem();
+        $this->form->reset(['customItemName', 'customItemQuantity', 'customItemPrice', 'customItemType']);
     }
 
-    public function updated($propertyName, $value)
+    #[On('invoice-item-updated')]
+    public function handleItemUpdated($index, $quantity)
     {
-        $this->resetErrorBag($propertyName);
-
-        if (preg_match('/^form.invoiceItems\.(\d+)\.quantity$/', $propertyName, $matches)) {
-            $index = $matches[1];
-            $item = &$this->form->invoiceItems[$index];
-            $stock = Item::find($item['item_id'])->stock;
-            $numericValue = floatval($value);
-
-            if ($numericValue < 0) {
-                $this->addError("form.invoiceItems.{$index}.quantity", "Kuantitas tidak boleh negatif.");
-                return;
-            }
-
-            if ($numericValue > $stock) {
-                $this->addError("form.invoiceItems.{$index}.quantity", "Kuantitas melebihi stok yang tersedia ({$stock}).");
-            } else {
-                $item['total'] = floatval($item['price']) * $numericValue;
-                $this->calculateTotal();
-
-            }
-        } elseif (preg_match('/^customItems\.(\d+)\.quantity$/', $propertyName, $matches)) {
-            $index = $matches[1];
-            $item = &$this->customItems[$index];
-            $numericValue = floatval($value);
-            $item['total'] = floatval($item['price']) * $numericValue;
-            $this->calculateTotal();
-        }
+        $this->form->updateInvoiceItem($index, $quantity);
     }
 
+    #[On('invoice-item-removed')]
     public function removeInvoiceItem($index)
     {
-        unset($this->form->invoiceItems[$index]);
-        $this->form->invoiceItems = array_values($this->invoiceItems);
-        $this->calculateTotal();
+        $this->form->removeInvoiceItem($index);
     }
 
+    #[On('custom-item-updated')]
+    public function handleCustomItemUpdated($index, $quantity)
+    {
+        $this->form->updateCustomItem($index, $quantity);
+    }
+
+    #[On('custom-item-removed')]
     public function removeCustomItem($index)
     {
-        unset($this->form->customItems[$index]);
-        $this->form->customItems = array_values($this->form->customItems);
-        $this->calculateTotal();
-    }
-
-    public function calculateTotal()
-    {
-        $this->form->total_amount = array_sum(array_column($this->form->invoiceItems, 'total')) + array_sum(array_column($this->form->customItems, 'total'));
+        $this->form->removeCustomItem($index);
     }
 
     public function save()
     {
-        $this->validate();
-
+        $this->form->validate();
         $this->form->store();
+
         $this->dispatch('flash-message', type: 'success', message: 'Faktur berhasil disimpan.');
-        return redirect()->route('invoices.index');
+        return $this->redirect(route('invoices.index'), navigate: true);
     }
 }

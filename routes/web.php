@@ -38,7 +38,7 @@ Route::get('/customers', CustomerManager::class)->name('customers');
 Route::get('/invoices', InvoiceManager::class)->name('invoices.index');
 Route::get('/invoices/create', CreateInvoice::class)->name('invoices.create');
 Route::get('/invoices/{invoiceId}', ShowInvoice::class)->name('invoices.show');
-Route::get('/invoices/{invoiceId}/edit', EditInvoice::class)->name('invoices.edit');
+Route::get('/invoices/{invoice}/edit', EditInvoice::class)->name('invoices.edit');
 
 // Rute untuk Laporan Penjualan
 Route::get('/sales-report', SalesReport::class)->name('sales-report');

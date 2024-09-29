@@ -8,7 +8,11 @@ class InvoiceItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['invoice_id', 'item_id', 'name', 'quantity', 'price', 'total'];
+    CONST TYPE_SERVICE = 'service';
+    CONST TYPE_PRODUCT = 'product';
+    CONST TYPE_CUSTOM = 'custom';
+
+    protected $fillable = ['invoice_id', 'item_id', 'name', 'quantity', 'price', 'total', 'type'];
 
     public function invoice()
     {

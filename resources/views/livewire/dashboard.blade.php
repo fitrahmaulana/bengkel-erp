@@ -35,10 +35,47 @@
                     <i class="bi bi-box-seam me-2"></i>Statistik Inventaris
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">Barang dengan Stok Rendah: {{ $lowStockItems }}</h5><br>
+                    <h5 class="card-title">Barang dengan Stok Rendah: {{ $lowStockItems->count() }}</h5><br>
                     <p class="card-text">Total Item: {{ $totalItems }}</p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Tabel lowStockItems -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <i class="bi bi-box-seam me-2"></i>Barang dengan Stok Rendah
+        </div>
+        <div class="card-body">
+            <table class="table  table-bordered table-striped">
+                <thead>
+                    <tr class="table-success">
+                        <th>Nama Barang</th>
+                        <th>Minimal Stok</th>
+                        <th>Stok</th>
+                        <th>Harga</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($lowStockItems as $item)
+                        <tr class="{{ $item->stock < $item->min_stock ? 'table-danger' : '' }}">
+                            <td>
+                                {{ $item->name }}
+                                @if ($item->stock < $item->min_stock)
+                                    <div class="text-danger">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                        Peringatan: Stok Rendah!
+                                    </div>
+                                @endif
+                            </td>
+                            <td>{{ $item->min_stock }}</td>
+                            <td>{{ $item->stock }}</td>
+                            <td>Rp{{ number_format($item->price, 0, ',', '.') }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

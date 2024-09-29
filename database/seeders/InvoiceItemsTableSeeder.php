@@ -40,7 +40,7 @@ class InvoiceItemsTableSeeder extends Seeder
             'quantity' => 1,
             'price' => 50000,
             'total' => 50000,
-            'type' => 'service',
+            'type' => \App\Models\InvoiceItem::TYPE_SERVICE,
         ]);
 
         InvoiceItem::create([
@@ -60,7 +60,7 @@ class InvoiceItemsTableSeeder extends Seeder
             'quantity' => 1,
             'price' => 30000,
             'total' => 30000,
-            'type' => 'service',
+            'type' => \App\Models\InvoiceItem::TYPE_SERVICE,
         ]);
 
         InvoiceItem::create([

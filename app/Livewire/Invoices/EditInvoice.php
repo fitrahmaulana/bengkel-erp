@@ -2,62 +2,96 @@
 
 namespace App\Livewire\Invoices;
 
-use App\Models\Customer;
+use App\Livewire\Forms\InvoiceForm;
 use App\Models\Invoice;
-use App\Models\InvoiceItem;
+use App\Models\Customer;
+use App\Models\Item;
 use Livewire\Component;
-
-use function PHPSTORM_META\type;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 
 class EditInvoice extends Component
 {
-    public $invoice;
-    public $invoiceItems = [];
-    public $customers;
-    public $customer_id, $invoice_date, $total_amount;
+    public InvoiceForm $form;
+    public Invoice $invoice;
+    public $searchTerm = '';
+    public $quantity = 1;
 
-    public function mount($invoiceId)
+    public function mount(Invoice $invoice)
     {
-        $this->invoice = Invoice::findOrFail($invoiceId);
-        $this->invoiceItems = InvoiceItem::where('invoice_id', $this->invoice->id)->get()->toArray();
-        $this->customers = Customer::all();
-        $this->customer_id = $this->invoice->customer_id;
-        $this->invoice_date = $this->invoice->invoice_date;
-        $this->total_amount = $this->invoice->total_amount;
+        $this->invoice = $invoice;
+        $this->form->setInvoice($invoice);
     }
 
     public function render()
     {
         return view('livewire.invoices.edit-invoice', [
-            'invoice' => $this->invoice,
-            'invoiceItems' => $this->invoiceItems,
             'customers' => $this->customers,
-        ]);
+            'items' => $this->searchResults,
+        ])->title('Edit Invoice');
     }
 
-    public function update()
+    #[Computed]
+    public function customers()
+    {
+        return Customer::all();
+    }
+
+    #[Computed]
+    public function searchResults()
+    {
+        return strlen($this->searchTerm) > 2
+            ? Item::where('name', 'like', "%{$this->searchTerm}%")->get()
+            : collect();
+    }
+
+    public function selectItem(Item $item)
     {
         $this->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'invoice_date' => 'required|date',
+            'quantity' => "required|integer|min:1|max:{$item->stock}",
         ]);
 
-        $this->invoice->update([
-            'customer_id' => $this->customer_id,
-            'invoice_date' => $this->invoice_date,
-            'total_amount' => $this->total_amount,
-        ]);
+        $this->form->addInvoiceItem($item, $this->quantity);
+        $this->reset(['searchTerm', 'quantity']);
+    }
 
-        foreach ($this->invoiceItems as $item) {
-            $invoiceItem = InvoiceItem::findOrFail($item['id']);
-            $invoiceItem->update([
-                'quantity' => $item['quantity'],
-                'price' => $item['price'],
-                'total' => $item['total'],
-            ]);
+    public function addCustomItem()
+    {
+        $this->form->addCustomItem();
+    }
+
+    #[On('invoice-item-updated')]
+    public function handleItemUpdated($index, $quantity)
+    {
+        $this->form->updateInvoiceItem($index, $quantity);
+    }
+
+    #[On('invoice-item-removed')]
+    public function removeInvoiceItem($index)
+    {
+        $this->form->removeInvoiceItem($index);
+    }
+
+    #[On('custom-item-updated')]
+    public function handleCustomItemUpdated($index, $quantity)
+    {
+        $this->form->updateCustomItem($index, $quantity);
+    }
+
+    #[On('custom-item-removed')]
+    public function removeCustomItem($index)
+    {
+        $this->form->removeCustomItem($index);
+    }
+
+    public function save()
+    {
+        try {
+            $this->form->update();
+            $this->dispatch('notify', type: 'success', message: 'Invoice updated successfully.');
+            return $this->redirect(route('invoices.index'), navigate: true);
+        } catch (\Exception $e) {
+            $this->dispatch('notify', type: 'error', message: 'Failed to update invoice: ' . $e->getMessage());
         }
-
-        $this->dispatch('flash-message', type: 'success', message: 'Faktur berhasil diperbarui!');
-        return redirect()->route('invoices.index');
     }
 }
