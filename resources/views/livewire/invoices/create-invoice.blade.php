@@ -93,7 +93,6 @@
                         <livewire:invoices.InvoiceItem :item="$item" :index="$index" :key="'invoice-items-'.$index" />
                     @endforeach
 
-                    @dump($form->invoiceItems)
                     @if (!empty($form->customItems))
                         <tr>
                             <td colspan="5" class="text-center">Jasa/Barang Custom</td>
