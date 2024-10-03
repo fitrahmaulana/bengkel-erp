@@ -55,6 +55,7 @@
                         <th>Minimal Stok</th>
                         <th>Stok</th>
                         <th>Harga</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,10 +73,36 @@
                             <td>{{ $item->min_stock }}</td>
                             <td>{{ $item->stock }}</td>
                             <td>Rp{{ number_format($item->price, 0, ',', '.') }}</td>
+                            {{-- munculkan supplier dengan modal yang berisi supplier dan nomor telepon --}}
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#supplierModal">Pesan</button>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    {{-- munculkan supplier dengan modal yang berisi supplier dan nomor telepon --}}
+    <div class="modal fade" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="supplierModalLabel">Pesan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body
+                ">
+                    <p>Nama Supplier: {{ $item->supplier->name }}</p>
+                    <p>Sales: {{$item->supplier->contact_person}} </p>
+                    <p>Nomor Telepon: {{ $item->supplier->phone }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

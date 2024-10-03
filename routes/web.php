@@ -2,12 +2,12 @@
 
 use App\Livewire\CustomerManager;
 use App\Livewire\Dashboard;
-use App\Livewire\InvoiceManager;
+use App\Livewire\Invoices\InvoiceManager;
 use App\Livewire\Invoices\CreateInvoice;
 use App\Livewire\Invoices\EditInvoice;
 use App\Livewire\Invoices\ShowInvoice;
 use Illuminate\Support\Facades\Route;
-use App\Livewire\ItemManager;
+use App\Livewire\Items\ItemManager;
 use App\Livewire\SalesReport;
 use App\Livewire\StockMovementManager;
 use App\Livewire\SupplierManager;

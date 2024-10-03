@@ -15,4 +15,9 @@ class Supplier extends Model
     {
         return $this->hasMany(StockMovement::class);
     }
+
+    public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
 }

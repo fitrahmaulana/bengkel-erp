@@ -52,7 +52,7 @@
             <div class="col-md-3">
                 <select wire:model="form.customItemType" class="form-control">
                     <option value='{{\App\Models\InvoiceItem::TYPE_SERVICE}}'>Jasa</option>
-                    <option value="{{\App\Models\InvoiceItem::TYPE_SERVICE}}">Custom</option>
+                    <option value="{{\App\Models\InvoiceItem::TYPE_CUSTOM}}">Custom</option>
                 </select>
                 @error('form.customItemType')
                     <span class="text-danger">{{ $message }}</span>

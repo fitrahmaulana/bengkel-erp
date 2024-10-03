@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('item_id')->constrained()->onDelete('cascade');
             $table->enum('type', ['in', 'out']);
             $table->integer('quantity');
-            $table->foreignId('supplier_id')->nullable()->constrained(); // Nullable for outgoing stock
             $table->timestamps();
         });
     }

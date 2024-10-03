@@ -21,14 +21,6 @@
                             <option value="in">Masuk</option>
                             <option value="out">Keluar</option>
                         </select>
-                        @if($type == 'in')
-                        <select wire:model="supplier_id" class="form-control mt-2">
-                                <option value="">Pilih Pemasok</option>
-                                @foreach($suppliers as $supplier)
-                                    <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
-                                @endforeach
-                            </select>
-                        @endif
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" wire:click="closeModal()">Tutup</button>
@@ -56,7 +48,7 @@
                     <td>{{ $movement->item->name }}</td>
                     <td>{{ $movement->quantity }}</td>
                     <td>{{ $movement->type }}</td>
-                    <td>{{ $movement->supplier ? $movement->supplier->name : '-' }}</td>
+                    <td>{{ $movement->item->supplier->name }}</td>
                     <td>
                         <button wire:click="delete({{ $movement->id }})" class="btn btn-danger btn-sm">Hapus</button>
                     </td>

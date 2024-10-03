@@ -20,21 +20,24 @@ class ItemSeeder extends Seeder
                 'description' => 'Oli mesin semi-sintetis yang membantu menjaga mesin tetap bersih, mengurangi endapan kotoran, dan memberikan perlindungan optimal untuk mesin mobil Anda.',
                 'stock' => 50,
                 'price' => 180000,
-                'min_stock' => 10
+                'min_stock' => 10,
+                'supplier_id' => 1
             ],
             [
                 'name' => 'Ban Bridgestone Ecopia EP150 185/70 R14',
                 'description' => 'Ban radial hemat bahan bakar yang menawarkan cengkeraman yang baik di jalan basah maupun kering, serta memberikan kenyamanan berkendara.',
                 'stock' => 20,
                 'price' => 550000,
-                'min_stock' => 5
+                'min_stock' => 5,
+                'supplier_id' => 2
             ],
             [
                 'name' => 'Busi NGK Iridium IX',
                 'description' => 'Busi NGK Iridium IX memberikan percikan api yang kuat untuk pembakaran yang lebih efisien, meningkatkan performa mesin dan keawetan komponen.',
                 'stock' => 100,
                 'price' => 95000,
-                'min_stock' => 20
+                'min_stock' => 20,
+                'supplier_id' => 3
             ],
         ];
 

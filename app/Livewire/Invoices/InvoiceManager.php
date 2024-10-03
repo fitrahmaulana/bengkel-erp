@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Invoices;
 
 use Livewire\Component;
 use App\Models\Invoice;
@@ -28,7 +28,7 @@ class InvoiceManager extends Component
             $this->items = [];
         }
 
-        return view('livewire.invoice-manager')
+        return view('livewire.invoices.invoice-manager')
             ->title('Manajemen Faktur');
     }
 

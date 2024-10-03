@@ -17,7 +17,6 @@ class StockMovementManager extends Component
     {
         $this->stockMovements = StockMovement::with('item', 'supplier')->get();
         $this->items = Item::all();
-        $this->suppliers = Supplier::all();
         return view('livewire.stock-movement-manager')
             ->title('Manajemen Pergerakan Stok');
     }
@@ -67,7 +66,6 @@ class StockMovementManager extends Component
             'item_id' => $this->item_id,
             'quantity' => $this->quantity,
             'type' => $this->type,
-            'supplier_id' => $this->type == 'in' ? $this->supplier_id : null,
         ]);
 
         $this->dispatch('flash-message', type: 'success', message: 'Pergerakan stok berhasil disimpan.');
